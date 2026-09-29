@@ -1,0 +1,42 @@
+﻿[
+    {
+        "Accode":  2,
+        "Name":  "†ÃÑÜ ÓôÜß¹ ËÜà‘",
+        "Time1":  null,
+        "Time2":  null,
+        "AutoRecno":  9,
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "UseRName":  "wcc",
+        "entdate":  "2010-10-12 11:29:19"
+    },
+    {
+        "Accode":  1,
+        "Name":  "ÓôÜß¹ ËÜà‘",
+        "Time1":  null,
+        "Time2":  null,
+        "AutoRecno":  10,
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "UseRName":  "wcc",
+        "entdate":  "2022-11-14 15:27:58"
+    },
+    {
+        "Accode":  3,
+        "Name":  "‹ÁÜÜÓ íÜÜ‹œÜÓ",
+        "Time1":  null,
+        "Time2":  null,
+        "AutoRecno":  11,
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "UseRName":  "wcc",
+        "entdate":  "2024-09-10 15:23:14"
+    },
+    {
+        "Accode":  4,
+        "Name":  "‹ÁÜÜÓ ÆÜßÑÜÜ†Üå ÝËÜêÜ",
+        "Time1":  null,
+        "Time2":  null,
+        "AutoRecno":  12,
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "UseRName":  "wcc",
+        "entdate":  "2024-12-09 21:28:39"
+    }
+]

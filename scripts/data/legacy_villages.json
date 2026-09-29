@@ -1,0 +1,90 @@
+﻿[
+    {
+        "VillageCode":  16,
+        "VillageName":  "unkown Village",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2023-10-14 08:58:29",
+        "ComputerName":  "DESKTOP-HT6CV25",
+        "AutoRecno":  26,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  17,
+        "VillageName":  "ÍÜÜéØ²ß ",
+        "Taluko":  "†ÜåêÜÆÜÜ²",
+        "District":  "ôÜàÓ´Ü",
+        "UserID":  "wcc",
+        "SysDate":  "2024-08-10 10:03:35",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  27,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  18,
+        "VillageName":  "ƒÜêÜßÆÜÜåÓ",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 09:59:08",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  28,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  19,
+        "VillageName":  "ÝôÜíÜÜ±Ü",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 09:59:25",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  30,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  20,
+        "VillageName":  "ôÑÜÜ¹êÜÜ",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 09:59:42",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  31,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  21,
+        "VillageName":  "†ÜåÍÜêÜÜ",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 09:59:59",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  32,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  22,
+        "VillageName":  "ÏÜÜÁÜÓ",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 10:00:09",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  33,
+        "EnGName":  null
+    },
+    {
+        "VillageCode":  23,
+        "VillageName":  "‘ÜÓåêÜß",
+        "Taluko":  "",
+        "District":  "",
+        "UserID":  "wcc",
+        "SysDate":  "2025-12-29 10:00:26",
+        "ComputerName":  "DESKTOP-5R5UN92",
+        "AutoRecno":  34,
+        "EnGName":  null
+    }
+]
