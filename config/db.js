@@ -21,7 +21,7 @@ const pool = mysql.createPool({
 (async () => {
   try {
     const conn = await pool.getConnection();
-    console.log('✅ [MySQL Database]: સફળતાપૂર્વક કનેક્ટ થયો! (ડેટાબેઝ: bharundi_piyat_mandali, UTF8MB4)');
+    console.log(`✅ [MySQL Database]: સફળતાપૂર્વક કનેક્ટ થયો! (ડેટાબેઝ: ${process.env.DB_NAME || 'bharundi_piyat_mandali'}, હોસ્ટ: ${process.env.DB_HOST || 'localhost'}, UTF8MB4)`);
     await conn.query('SET NAMES utf8mb4');
     conn.release();
   } catch (err) {
