@@ -15,11 +15,48 @@ export function toGujaratiDigits(str) {
   return String(str).replace(/[0-9]/g, d => guj[parseInt(d, 10)]);
 }
 
+import { query } from '../config/db.js';
+
+let cachedYears = [];
+
+export async function refreshYearLockCache() {
+  try {
+    const rows = await query('SELECT id, year_name, is_current, is_locked FROM financial_years');
+    if (rows && rows.length > 0) {
+      cachedYears = rows;
+    }
+  } catch (err) {
+    console.warn('Could not refresh year lock cache:', err.message);
+  }
+}
+
+// Initial cache load
+refreshYearLockCache();
+
 export function isLockedYear(year) {
   if (!year) return false;
   const norm = toEnglishDigits(String(year)).trim();
-  // જો ૨૦૨૬-૨૦૨૭ હોય તો અનલૉક, બાકીના તમામ પાછલા વર્ષો લૉક
-  return norm !== '2026-2027';
+  const guj = toGujaratiDigits(norm);
+
+  if (cachedYears.length > 0) {
+    const found = cachedYears.find(y => {
+      const yNorm = toEnglishDigits(y.year_name || '').trim();
+      return yNorm === norm || y.year_name === year || y.year_name === guj;
+    });
+    if (found) {
+      // Any year marked as locked (is_locked=1) OR not current (is_current=0) is locked
+      return Boolean(found.is_locked) || !Boolean(found.is_current);
+    }
+
+    // Check if it matches current active year
+    const curr = cachedYears.find(y => Boolean(y.is_current));
+    if (curr) {
+      return norm !== toEnglishDigits(curr.year_name || '').trim();
+    }
+  }
+
+  // Fallback if cache is empty during initial cold-start
+  return false;
 }
 
 /**

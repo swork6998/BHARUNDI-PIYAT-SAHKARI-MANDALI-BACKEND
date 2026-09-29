@@ -1,6 +1,6 @@
 import express from 'express';
 import { query } from '../config/db.js';
-import { toEnglishDigits, getYearsUpTo } from '../utils/yearLock.js';
+import { toEnglishDigits, toGujaratiDigits, getYearsUpTo } from '../utils/yearLock.js';
 
 const router = express.Router();
 

@@ -1,5 +1,6 @@
 import express from 'express';
 import { query } from '../config/db.js';
+import { refreshYearLockCache } from '../utils/yearLock.js';
 
 const router = express.Router();
 
@@ -41,31 +42,89 @@ router.get('/years', async (req, res) => {
 });
 
 router.post('/years', async (req, res) => {
-  const { year_name, start_date, end_date, is_current } = req.body;
+  const { year_name, start_date, end_date, is_current, is_locked } = req.body;
   try {
+    const isCurr = is_current ? 1 : 0;
+    const isLock = is_locked !== undefined ? (is_locked ? 1 : 0) : (isCurr ? 0 : 1);
+
+    if (isCurr) {
+      await query('UPDATE financial_years SET is_current = 0, is_locked = 1');
+    }
+
     const result = await query(
-      'INSERT INTO financial_years (year_name, start_date, end_date, is_current) VALUES (?, ?, ?, ?)',
-      [year_name, start_date, end_date, is_current || false]
+      'INSERT INTO financial_years (year_name, start_date, end_date, is_current, is_locked) VALUES (?, ?, ?, ?, ?)',
+      [year_name, start_date, end_date, isCurr, isLock]
     );
-    res.json({ success: true, id: result?.insertId, message: 'નવું વર્ષ સફળતાપૂર્વક ઉમેરાયું!' });
+    await refreshYearLockCache();
+    res.json({ success: true, id: result?.insertId, message: 'નવું નાણાકીય વર્ષ સફળતાપૂર્વક ઉમેરાયું!' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'વર્ષ ઉમેરવામાં ભૂલ: ' + err.message });
   }
 });
 
 router.put('/years/:id', async (req, res) => {
-  const { year_name, start_date, end_date, is_current } = req.body;
+  const { year_name, start_date, end_date, is_current, is_locked } = req.body;
   try {
-    if (is_current) {
-      await query('UPDATE financial_years SET is_current = FALSE');
+    const isCurr = is_current ? 1 : 0;
+    const isLock = is_locked !== undefined ? (is_locked ? 1 : 0) : (isCurr ? 0 : 1);
+
+    if (isCurr) {
+      await query('UPDATE financial_years SET is_current = 0, is_locked = 1 WHERE id != ?', [req.params.id]);
     }
+
     await query(
-      'UPDATE financial_years SET year_name = ?, start_date = ?, end_date = ?, is_current = ? WHERE id = ?',
-      [year_name, start_date, end_date, is_current ? 1 : 0, req.params.id]
+      'UPDATE financial_years SET year_name = ?, start_date = ?, end_date = ?, is_current = ?, is_locked = ? WHERE id = ?',
+      [year_name, start_date, end_date, isCurr, isLock, req.params.id]
     );
+    await refreshYearLockCache();
     res.json({ success: true, message: 'વર્ષ વિગત સફળતાપૂર્વક સુધારી લેવાઈ!' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'વર્ષ સુધારવામાં ભૂલ: ' + err.message });
+  }
+});
+
+router.put('/years/:id/set-current', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await query('UPDATE financial_years SET is_current = 0, is_locked = 1');
+    await query('UPDATE financial_years SET is_current = 1, is_locked = 0 WHERE id = ?', [id]);
+    await refreshYearLockCache();
+    const [updated] = await query('SELECT * FROM financial_years WHERE id = ?', [id]);
+    res.json({
+      success: true,
+      data: updated,
+      message: `${updated?.year_name} ને ચાલુ સક્રિય વર્ષ બનાવવામાં આવ્યું!`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'ચાલુ વર્ષ સેટ કરવામાં ભૂલ: ' + err.message });
+  }
+});
+
+router.put('/years/:id/toggle-lock', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const [yr] = await query('SELECT * FROM financial_years WHERE id = ?', [id]);
+    if (!yr) {
+      return res.status(404).json({ success: false, message: 'વર્ષ મળ્યું નથી.' });
+    }
+    if (yr.is_current) {
+      return res.status(400).json({
+        success: false,
+        message: 'ચાલુ સક્રિય વર્ષને લૉક કરી શકાશે નહીં. પહેલાં અન્ય વર્ષને સક્રિય કરો.'
+      });
+    }
+    const newLock = yr.is_locked ? 0 : 1;
+    await query('UPDATE financial_years SET is_locked = ? WHERE id = ?', [newLock, id]);
+    await refreshYearLockCache();
+    res.json({
+      success: true,
+      is_locked: newLock,
+      message: newLock
+        ? `${yr.year_name} સફળતાપૂર્વક લૉક કરવામાં આવ્યું (ફક્ત વાંચવા/પ્રિન્ટ માટે).`
+        : `${yr.year_name} સફળતાપૂર્વક અનલૉક કરવામાં આવ્યું.`
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'વર્ષ લૉક બદલવામાં ભૂલ: ' + err.message });
   }
 });
 
@@ -83,6 +142,7 @@ router.delete('/years/:id', async (req, res) => {
       return res.status(400).json({ success: false, message: `આ વર્ષ (${yr.year_name}) હેઠળ ${piyat.c} પિયત એન્ટ્રીઓ હોવાથી ડિલીટ કરી શકાશે નહીં.` });
     }
     await query('DELETE FROM financial_years WHERE id = ?', [req.params.id]);
+    await refreshYearLockCache();
     res.json({ success: true, message: 'વર્ષ સફળતાપૂર્વક ડિલીટ કરાયું!' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'વર્ષ ડિલીટ કરવામાં ભૂલ: ' + err.message });
